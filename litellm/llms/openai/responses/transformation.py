@@ -85,8 +85,10 @@ class OpenAIResponsesAPIConfig(BaseResponsesAPIConfig):
         )
 
         return final_request_params
-    
-    def _validate_input_param(self, input: Union[str, ResponseInputParam]) -> Union[str, ResponseInputParam]:
+
+    def _validate_input_param(
+        self, input: Union[str, ResponseInputParam]
+    ) -> Union[str, ResponseInputParam]:
         """
         Ensure all input fields if pydantic are converted to dict
 
@@ -114,7 +116,9 @@ class OpenAIResponsesAPIConfig(BaseResponsesAPIConfig):
         """No transform applied since outputs are in OpenAI spec already"""
         try:
             raw_response_json = raw_response.json()
-            raw_response_json["created_at"] = _safe_convert_created_field(raw_response_json["created_at"])
+            raw_response_json["created_at"] = _safe_convert_created_field(
+                raw_response_json["created_at"]
+            )
         except Exception:
             raise OpenAIError(
                 message=raw_response.text, status_code=raw_response.status_code

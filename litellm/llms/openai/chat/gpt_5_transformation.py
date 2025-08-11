@@ -15,10 +15,11 @@ class OpenAIGPT5Config(OpenAIGPTConfig):
     - Mapping ``max_tokens`` -> ``max_completion_tokens``.
     - Dropping unsupported ``temperature`` values when requested.
     """
+
     @classmethod
     def is_model_gpt_5_model(cls, model: str) -> bool:
         return "gpt-5" in model
-    
+
     def get_supported_openai_params(self, model: str) -> list:
         base_gpt_series_params = super().get_supported_openai_params(model=model)
         gpt_5_only_params = ["reasoning_effort"]
@@ -61,4 +62,3 @@ class OpenAIGPT5Config(OpenAIGPTConfig):
             model=model,
             drop_params=drop_params,
         )
-

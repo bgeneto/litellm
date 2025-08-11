@@ -1066,10 +1066,10 @@ def convert_to_gemini_tool_call_invoke(
         if tool_calls is not None:
             for tool in tool_calls:
                 if "function" in tool:
-                    gemini_function_call: Optional[VertexFunctionCall] = (
-                        _gemini_tool_call_invoke_helper(
-                            function_call_params=tool["function"]
-                        )
+                    gemini_function_call: Optional[
+                        VertexFunctionCall
+                    ] = _gemini_tool_call_invoke_helper(
+                        function_call_params=tool["function"]
                     )
                     if gemini_function_call is not None:
                         _parts_list.append(
@@ -1588,9 +1588,9 @@ def anthropic_messages_pt(  # noqa: PLR0915
                             )
 
                             if "cache_control" in _content_element:
-                                _anthropic_content_element["cache_control"] = (
-                                    _content_element["cache_control"]
-                                )
+                                _anthropic_content_element[
+                                    "cache_control"
+                                ] = _content_element["cache_control"]
                             user_content.append(_anthropic_content_element)
                         elif m.get("type", "") == "text":
                             m = cast(ChatCompletionTextObject, m)
@@ -1628,9 +1628,9 @@ def anthropic_messages_pt(  # noqa: PLR0915
                     )
 
                     if "cache_control" in _content_element:
-                        _anthropic_content_text_element["cache_control"] = (
-                            _content_element["cache_control"]
-                        )
+                        _anthropic_content_text_element[
+                            "cache_control"
+                        ] = _content_element["cache_control"]
 
                     user_content.append(_anthropic_content_text_element)
 
@@ -2481,8 +2481,7 @@ class BedrockImageProcessor:
 
         if is_document:
             return BedrockImageProcessor._get_document_format(
-                mime_type=mime_type,
-                supported_doc_formats=supported_doc_formats
+                mime_type=mime_type, supported_doc_formats=supported_doc_formats
             )
 
         else:
@@ -2494,12 +2493,9 @@ class BedrockImageProcessor:
                     f"Unsupported image format: {image_format}. Supported formats: {supported_image_and_video_formats}"
                 )
             return image_format
-    
+
     @staticmethod
-    def _get_document_format(
-        mime_type: str,
-        supported_doc_formats: List[str]
-        ) -> str:
+    def _get_document_format(mime_type: str, supported_doc_formats: List[str]) -> str:
         """
         Get the document format from the mime type
 
@@ -2518,13 +2514,9 @@ class BedrockImageProcessor:
             The document format
         """
         valid_extensions: Optional[List[str]] = None
-        potential_extensions = mimetypes.guess_all_extensions(
-            mime_type, strict=False
-        )
+        potential_extensions = mimetypes.guess_all_extensions(mime_type, strict=False)
         valid_extensions = [
-            ext[1:]
-            for ext in potential_extensions
-            if ext[1:] in supported_doc_formats
+            ext[1:] for ext in potential_extensions if ext[1:] in supported_doc_formats
         ]
 
         # Fallback to types/files.py if mimetypes doesn't return valid extensions

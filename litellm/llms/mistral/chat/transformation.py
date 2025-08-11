@@ -145,7 +145,9 @@ class MistralConfig(OpenAIGPTConfig):
         for param, value in non_default_params.items():
             if param == "max_tokens":
                 optional_params["max_tokens"] = value
-            if param == "max_completion_tokens":  # max_completion_tokens should take priority
+            if (
+                param == "max_completion_tokens"
+            ):  # max_completion_tokens should take priority
                 optional_params["max_tokens"] = value
             if param == "tools":
                 # Clean tools to remove problematic schema fields for Mistral API
@@ -159,7 +161,9 @@ class MistralConfig(OpenAIGPTConfig):
             if param == "stop":
                 optional_params["stop"] = value
             if param == "tool_choice" and isinstance(value, str):
-                optional_params["tool_choice"] = self._map_tool_choice(tool_choice=value)
+                optional_params["tool_choice"] = self._map_tool_choice(
+                    tool_choice=value
+                )
             if param == "seed":
                 optional_params["extra_body"] = {"random_seed": value}
             if param == "response_format":
@@ -185,7 +189,9 @@ class MistralConfig(OpenAIGPTConfig):
         )  # type: ignore
 
         # if api_base does not end with /v1 we add it
-        if api_base is not None and not api_base.endswith("/v1"):  # Mistral always needs a /v1 at the end
+        if api_base is not None and not api_base.endswith(
+            "/v1"
+        ):  # Mistral always needs a /v1 at the end
             api_base = api_base + "/v1"
         dynamic_api_key = (
             api_key
@@ -269,20 +275,30 @@ class MistralConfig(OpenAIGPTConfig):
                     # Handle both string and list content, preserving original format
                     if isinstance(existing_content, str):
                         # String content - prepend reasoning prompt
-                        new_content: Union[str, list] = f"{reasoning_prompt}\n\n{existing_content}"
+                        new_content: Union[
+                            str, list
+                        ] = f"{reasoning_prompt}\n\n{existing_content}"
                     elif isinstance(existing_content, list):
                         # List content - prepend reasoning prompt as text block
-                        new_content = [{"type": "text", "text": reasoning_prompt + "\n\n"}] + existing_content
+                        new_content = [
+                            {"type": "text", "text": reasoning_prompt + "\n\n"}
+                        ] + existing_content
                     else:
                         # Fallback for any other type - convert to string
                         new_content = f"{reasoning_prompt}\n\n{str(existing_content)}"
 
-                    messages[i] = cast(AllMessageValues, {**msg, "content": new_content})
+                    messages[i] = cast(
+                        AllMessageValues, {**msg, "content": new_content}
+                    )
                     break
         else:
             # Add new system message with reasoning instructions
             reasoning_message: AllMessageValues = cast(
-                AllMessageValues, {"role": "system", "content": self._get_mistral_reasoning_system_prompt()}
+                AllMessageValues,
+                {
+                    "role": "system",
+                    "content": self._get_mistral_reasoning_system_prompt(),
+                },
             )
             messages = [reasoning_message] + messages
 
@@ -294,32 +310,34 @@ class MistralConfig(OpenAIGPTConfig):
     def _clean_tool_schema_for_mistral(cls, tools: list) -> list:
         """
         Clean tool schemas to remove fields that cause issues with Mistral API.
-        
+
         Removes:
         - $id and $schema fields (cause grammar validation errors)
         - additionalProperties=False (causes OpenAI API schema errors)
         - strict field (not supported by Mistral)
-        
+
         Args:
             tools: List of tool definitions
             max_depth: Maximum recursion depth for schema cleaning (default: 10)
-        
+
         Returns:
             Cleaned tools list
         """
         if not tools:
             return tools
-            
+
         import copy
 
         from litellm.constants import DEFAULT_MAX_RECURSE_DEPTH
         from litellm.utils import _remove_json_schema_refs
 
         cleaned_tools = copy.deepcopy(tools)
-        
+
         # Apply all cleaning functions with max_depth protection
-        cleaned_tools = _remove_json_schema_refs(cleaned_tools, max_depth=DEFAULT_MAX_RECURSE_DEPTH)
-        
+        cleaned_tools = _remove_json_schema_refs(
+            cleaned_tools, max_depth=DEFAULT_MAX_RECURSE_DEPTH
+        )
+
         return cleaned_tools
 
     @classmethod
@@ -396,8 +414,12 @@ class MistralConfig(OpenAIGPTConfig):
             dict: The transformed request. Sent as the body of the API call.
         """
         # Add reasoning system prompt if needed (for magistral models)
-        if "magistral" in model.lower() and optional_params.get("_add_reasoning_prompt", False):
-            messages = self._add_reasoning_system_prompt_if_needed(messages, optional_params)
+        if "magistral" in model.lower() and optional_params.get(
+            "_add_reasoning_prompt", False
+        ):
+            messages = self._add_reasoning_system_prompt_if_needed(
+                messages, optional_params
+            )
 
         # Call parent transform_request which handles _transform_messages
         return super().transform_request(

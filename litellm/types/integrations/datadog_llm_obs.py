@@ -62,4 +62,5 @@ class DatadogLLMObsInitParams(StandardCustomLoggerInitParams):
     """
     Params for initializing a DatadogLLMObs logger on litellm
     """
+
     pass
