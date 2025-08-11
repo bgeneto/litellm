@@ -73,7 +73,7 @@ class BaseLLMModelInfo(ABC):
     def get_token_counter(self):
         """
         Factory method to create a token counter for this provider.
-        
+
         Returns:
             Optional TokenCounterInterface implementation for this provider,
             or None if token counting is not supported.

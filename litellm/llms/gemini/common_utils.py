@@ -44,7 +44,11 @@ class GeminiModelInfo(BaseLLMModelInfo):
 
     @staticmethod
     def get_api_key(api_key: Optional[str] = None) -> Optional[str]:
-        return api_key or (get_secret_str("GOOGLE_API_KEY")) or (get_secret_str("GEMINI_API_KEY"))
+        return (
+            api_key
+            or (get_secret_str("GOOGLE_API_KEY"))
+            or (get_secret_str("GEMINI_API_KEY"))
+        )
 
     @staticmethod
     def get_base_model(model: str) -> Optional[str]:

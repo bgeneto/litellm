@@ -183,7 +183,9 @@ class MlflowLogger(CustomLogger):
             "call_type": kwargs.get("call_type"),
             "model": kwargs.get("model"),
         }
-        standard_obj: Optional[StandardLoggingPayload] = kwargs.get("standard_logging_object")
+        standard_obj: Optional[StandardLoggingPayload] = kwargs.get(
+            "standard_logging_object"
+        )
         if standard_obj:
             attributes.update(
                 {
@@ -232,7 +234,6 @@ class MlflowLogger(CustomLogger):
         """
         import mlflow
 
-
         call_type = kwargs.get("call_type", "completion")
         span_name = f"litellm-{call_type}"
         span_type = self._get_span_type(call_type)
@@ -257,9 +258,12 @@ class MlflowLogger(CustomLogger):
                 span_type=span_type,
                 inputs=inputs,
                 attributes=attributes,
-                tags=self._transform_tag_list_to_dict(attributes.get("request_tags", [])),
+                tags=self._transform_tag_list_to_dict(
+                    attributes.get("request_tags", [])
+                ),
                 start_time_ns=start_time_ns,
             )
+
     def _transform_tag_list_to_dict(self, tag_list: list) -> dict:
         return {tag: "" for tag in tag_list}
 

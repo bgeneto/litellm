@@ -232,7 +232,7 @@ class AnthropicModelInfo(BaseLLMModelInfo):
     def get_token_counter(self) -> Optional["AnthropicTokenCounter"]:
         """
         Factory method to create an Anthropic token counter.
-        
+
         Returns:
             AnthropicTokenCounter instance for this provider.
         """
@@ -241,23 +241,23 @@ class AnthropicModelInfo(BaseLLMModelInfo):
 
 class AnthropicTokenCounter:
     """Token counter implementation for Anthropic provider."""
-    
+
     def supports_provider(
-        self, 
-        deployment: Optional[Dict[str, Any]] = None,
-        from_endpoint: bool = False
+        self, deployment: Optional[Dict[str, Any]] = None, from_endpoint: bool = False
     ) -> bool:
         if not from_endpoint:
             return False
-            
+
         if deployment is None:
             return False
-            
+
         full_model = deployment.get("litellm_params", {}).get("model", "")
-        is_anthropic_provider = full_model.startswith("anthropic/") or "anthropic" in full_model.lower()
-        
+        is_anthropic_provider = (
+            full_model.startswith("anthropic/") or "anthropic" in full_model.lower()
+        )
+
         return is_anthropic_provider
-    
+
     async def count_tokens(
         self,
         model_to_use: str,
@@ -266,13 +266,13 @@ class AnthropicTokenCounter:
         request_model: str = "",
     ) -> Optional[Dict[str, Any]]:
         from litellm.proxy.utils import count_tokens_with_anthropic_api
-        
+
         result = await count_tokens_with_anthropic_api(
             model_to_use=model_to_use,
             messages=messages,
             deployment=deployment,
         )
-        
+
         if result is not None:
             return {
                 "total_tokens": result["total_tokens"],
@@ -280,7 +280,7 @@ class AnthropicTokenCounter:
                 "model_used": model_to_use,
                 "tokenizer_type": result["tokenizer_used"],
             }
-        
+
         return None
 
 
